@@ -1,0 +1,87 @@
+x-backend-common: &backend-common
+  build: .
+  volumes:
+    - .:/app
+  environment:
+    - REDIS_URL=redis://redis:6379/0
+    - DATABASE_URL=postgresql://user:password@postgres:5432/autoclip
+    - GROQ_API_KEY=${GROQ_API_KEY:-}
+    - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+    - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
+    - ALIBABA_API_KEY=${ALIBABA_API_KEY:-}
+    - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN:-}
+    - HF_TOKEN=${HF_TOKEN:-}
+
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: autoclip_redis
+    ports:
+      - "6379:6379"
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: autoclip_postgres
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: autoclip
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  api:
+    <<: *backend-common
+    container_name: autoclip_api
+    ports:
+      - "8080:8000"
+    depends_on:
+      - redis
+      - postgres
+    command: uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
+
+  frontend:
+    image: node:20-alpine
+    container_name: autoclip_frontend
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "3001:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8080/api/v1
+    command: npm run dev
+    depends_on:
+      - api
+
+  worker:
+    <<: *backend-common
+    container_name: autoclip_worker
+    depends_on:
+      - redis
+      - postgres
+    command: celery -A core.celery_app worker --loglevel=info --concurrency=1
+
+  clipping-env:
+    <<: *backend-common
+    container_name: clipping_python_env
+    tty: true
+
+  transformers-sandbox:
+    build:
+      context: .
+      dockerfile: Dockerfile.transformers
+    container_name: transformers_sandbox
+    ports:
+      - "8888:8888" # Pour JupyterLab
+    volumes:
+      - .:/app
+      - ~/.cache/huggingface:/root/.cache/huggingface # Montage du cache HF !
+    environment:
+      - HF_TOKEN=${HF_TOKEN:-}
+    tty: true
+    command: jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root --NotebookApp.token='' --NotebookApp.password=''
+
+volumes:
+  pgdata:

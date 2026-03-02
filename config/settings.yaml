@@ -1,0 +1,44 @@
+pipeline:
+  engine: auto
+  min_clips: 3
+  max_clips: 7
+  clip_duration:
+    min: 15
+    max: 60
+  structure: episodic
+
+video:
+  output_quality: high
+  max_saturation: 1.2
+  max_contrast: 1.1
+  face_tracking: true
+  subtitles: true
+
+platforms:
+  tiktok:
+    enabled: true
+    resolution: "1080x1920"
+    color_style: vibrant
+  reels:
+    enabled: true
+    resolution: "1080x1920"
+    color_style: warm
+  facebook:
+    enabled: true
+    resolution: "1080x1350"
+    color_style: cinematic
+
+effects:
+  visual:
+    zoom_on_hook: true
+    zoom_on_climax: true
+    shake_on_impact: true
+    vignette: true
+  audio:
+    sfx_enabled: true
+    bass_drop_on_punchline: true
+    whoosh_on_transition: true
+    riser_before_hook: true
+  transitions:
+    style: crossfade
+    duration: 0.3

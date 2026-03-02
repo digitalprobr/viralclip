@@ -1,0 +1,56 @@
+# ─── Python ───
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+dist/
+build/
+*.egg
+
+# ─── Environment ───
+.env
+.env.local
+.env.*.local
+venv/
+.venv/
+
+# ─── IDE ───
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ─── OS ───
+.DS_Store
+Thumbs.db
+
+# ─── Docker ───
+*.log
+
+# ─── Downloads & Media (heavy files) ───
+downloads/
+*.mp4
+*.mp3
+*.wav
+*.avi
+*.mkv
+*.webm
+
+# ─── ML Models & Cache ───
+*.pt
+*.pth
+*.bin
+*.onnx
+.cache/
+models/
+
+# ─── Node / Frontend ───
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+
+# ─── Misc ───
+*.bak
+*.tmp
+reference_repo/

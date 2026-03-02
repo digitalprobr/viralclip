@@ -1,0 +1,40 @@
+# Outil de téléchargement YouTube
+yt-dlp
+
+# Appels API généraux
+requests==2.31.0
+python-dotenv==1.0.1
+
+# IA - Face Tracking
+mediapipe>=0.10.13
+numpy
+
+# IA - Transcription locale (fallback)
+openai-whisper
+ffmpeg-python>=0.2.0
+srt>=3.5.3
+
+# Validation des réponses API et Config
+pydantic>=2.0.0
+pydantic-settings>=2.0.0
+pyyaml>=6.0.1
+
+# Qualité de Code
+mypy>=1.11.0
+types-requests
+types-PyYAML
+flake8>=7.1.0
+pytest
+
+# Backend SaaS & Asynchrone (Préparation Phase 2)
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0
+celery>=5.4.0
+redis>=5.0.0
+sqlalchemy>=2.0.0
+alembic
+psycopg2-binary
+
+# Tests
+pytest>=8.0.0
+pytest-mock>=3.12.0

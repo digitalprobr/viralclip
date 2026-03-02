@@ -1,0 +1,33 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Utilitaires système et FFmpeg (indispensable pour les traitements audio/vidéo)
+RUN apt-get update && apt-get install -y \
+    ffmpeg \
+    git \
+    wget \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Installation de PyTorch (version CPU standardisée pour un conteneur stable sur tout hôte)
+RUN pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+
+# Écosystème Hugging Face & JupyterLab
+RUN pip install --no-cache-dir \
+    transformers \
+    huggingface_hub \
+    accelerate \
+    datasets \
+    jupyterlab \
+    ipywidgets \
+    librosa \
+    soundfile
+
+# Installation des dépendances du projet AutoClip-AI pour que la sandbox puisse tester notre code
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+EXPOSE 8888
+
+CMD ["bash"]
