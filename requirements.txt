@@ -2,7 +2,10 @@
 yt-dlp
 
 # Appels API généraux
-requests==2.31.0
+requests>=2.32.4
+wheel>=0.46.2
+pip>=25.3.0
+slowapi>=0.1.9
 python-dotenv==1.0.1
 
 # IA - Face Tracking
@@ -26,7 +29,7 @@ types-PyYAML
 flake8>=7.1.0
 pytest
 
-# Backend SaaS & Asynchrone (Préparation Phase 2)
+# Backend SaaS & Asynchrone
 fastapi>=0.115.0
 uvicorn[standard]>=0.32.0
 celery>=5.4.0
@@ -34,6 +37,9 @@ redis>=5.0.0
 sqlalchemy>=2.0.0
 alembic
 psycopg2-binary
+asyncpg>=0.29.0
+PyJWT>=2.8.0
+bcrypt>=4.1.0
 
 # Tests
 pytest>=8.0.0

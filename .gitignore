@@ -6,6 +6,8 @@ __pycache__/
 dist/
 build/
 *.egg
+.mypy_cache/
+.pytest_cache/
 
 # ─── Environment ───
 .env
@@ -25,11 +27,12 @@ venv/
 .DS_Store
 Thumbs.db
 
-# ─── Docker ───
+# ─── Logs ───
 *.log
 
 # ─── Downloads & Media (heavy files) ───
-downloads/
+downloads/*
+!downloads/.gitkeep
 *.mp4
 *.mp3
 *.wav
@@ -53,8 +56,6 @@ frontend/out/
 # ─── Misc ───
 *.bak
 *.tmp
-reference_repo/
-.ipynb_checkpoints/
 *.ipynb
-test_output.log
-task.md
+.ipynb_checkpoints/
+reference_repo/

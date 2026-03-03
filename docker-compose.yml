@@ -4,13 +4,21 @@ x-backend-common: &backend-common
     - .:/app
   environment:
     - REDIS_URL=redis://redis:6379/0
-    - DATABASE_URL=postgresql://user:password@postgres:5432/autoclip
+    - DATABASE_URL=postgresql+asyncpg://user:password@postgres:5432/autoclip
     - GROQ_API_KEY=${GROQ_API_KEY:-}
     - GEMINI_API_KEY=${GEMINI_API_KEY:-}
     - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
     - ALIBABA_API_KEY=${ALIBABA_API_KEY:-}
     - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN:-}
     - HF_TOKEN=${HF_TOKEN:-}
+    - AUTH_SECRET_KEY=${AUTH_SECRET_KEY:-viralclip-dev-secret-key-change-in-prod}
+    - FRONTEND_URL=http://localhost:3001
+    - SMTP_HOST=${SMTP_HOST:-}
+    - SMTP_PORT=${SMTP_PORT:-587}
+    - SMTP_USER=${SMTP_USER:-}
+    - SMTP_PASSWORD=${SMTP_PASSWORD:-}
+    - FROM_EMAIL=${FROM_EMAIL:-}
+    - FROM_NAME=${FROM_NAME:-ViralClip}
 
 services:
   redis:
@@ -50,7 +58,7 @@ services:
     ports:
       - "3001:3000"
     environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:8080/api/v1
+      - NEXT_PUBLIC_API_URL=http://localhost:8080
     command: npm run dev
     depends_on:
       - api
