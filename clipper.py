@@ -121,8 +121,14 @@ def process_clips(
 
             # Récupérer le plan d'effets pour ce clip
             clip_effects = _get_clip_effects(effects_plan, i + 1)
+            
+            # Déterminer les plateformes spécifiques à ce clip d'après les filtres
+            if effects_plan and clip_effects and "platforms" in clip_effects and clip_effects["platforms"]:
+                clip_platforms = list(clip_effects["platforms"].keys())
+            else:
+                clip_platforms = platforms
 
-            for platform in platforms:
+            for platform in clip_platforms:
                 _render_clip(
                     video_path, start_time, duration, raw_title, title, i,
                     face_x_center, transcription_path, output_dir,

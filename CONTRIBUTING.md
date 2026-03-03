@@ -1,81 +1,62 @@
-# Contributing to ViralClip
+# Contributing to AutoClip AI
 
-Thank you for your interest in contributing to ViralClip! This guide will help you get started.
-
-## 🏗️ Development Setup
-
-### Prerequisites
-
-- Python 3.10+
-- Node.js 20+
-- Docker & Docker Compose v2+
-- At least one AI API key (Gemini, DeepSeek, Groq, or Alibaba)
-
-### Local Setup
-
-```bash
-# Clone the repo
-git clone https://github.com/amineautoformation-dev/viralclip.git
-cd viralclip
-
-# Copy environment template
-cp .env.example .env
-# Edit .env and add your API keys
-
-# Start all services
-docker compose up --build -d
-
-# Install frontend dependencies (for local dev)
-cd frontend && npm install && cd ..
-```
-
-### Running Tests
-
-```bash
-docker compose exec api pytest tests/ -v
-docker compose exec api mypy --config-file mypy.ini .
-docker compose exec api flake8 --max-line-length 120
-```
-
-## 📋 Contribution Workflow
+## Getting Started
 
 1. **Fork** the repository
-2. Create a **feature branch**: `git checkout -b feature/my-feature`
-3. **Commit** your changes: `git commit -m "feat: add my feature"`
-4. **Push** to your fork: `git push origin feature/my-feature`
-5. Open a **Pull Request**
+2. **Clone** your fork: `git clone https://github.com/yourusername/autoclip-ai.git`
+3. **Copy** environment: `cp .env.example .env`
+4. **Start** services: `docker compose up -d --build`
 
-## 🏷️ Commit Convention
+## Development Workflow
 
-We follow [Conventional Commits](https://www.conventionalcommits.org/):
+### Branch Naming
 
-| Prefix | Usage |
-|--------|-------|
-| `feat:` | New feature |
-| `fix:` | Bug fix |
-| `docs:` | Documentation |
-| `refactor:` | Code refactoring |
-| `test:` | Adding tests |
-| `chore:` | Maintenance |
+```
+feature/description    → New features
+fix/description        → Bug fixes
+docs/description       → Documentation
+refactor/description   → Code refactoring
+```
 
-## 📁 Where to Contribute
+### Running Locally (without Docker)
 
-| Area | Files | Good for |
-|------|-------|----------|
-| **New AI Engine** | `engines/` | Add support for Claude, GPT-4, etc. |
-| **Video Effects** | `effects_*.py` | New transitions, filters, styles |
-| **Frontend** | `frontend/src/` | UI improvements, new pages |
-| **API Endpoints** | `api/main.py` | New routes, middleware |
-| **Tests** | `tests/` | Unit & integration tests |
-| **Documentation** | `*.md` | Guides, examples, translations |
+```bash
+# Backend
+pip install -r requirements.txt
+uvicorn api.main:app --reload --port 8000
 
-## 🐛 Reporting Bugs
+# Frontend
+cd frontend && npm install && npm run dev
 
-Open an issue with:
-- Steps to reproduce
-- Expected vs actual behavior
-- Environment details (OS, Docker version, API keys used)
+# Worker
+celery -A core.celery_app worker --loglevel=info
+```
 
-## 📄 License
+### Tests
 
-By contributing, you agree that your contributions will be licensed under the MIT License.
+```bash
+pytest tests/ -v
+```
+
+## Project Structure
+
+- `api/` — FastAPI endpoints and authentication
+- `core/` — Database models, Celery config
+- `worker/` — Background task definitions
+- `engines/` — AI analysis engine integrations
+- `frontend/` — Next.js web application
+- Root `.py` files — Video processing pipeline modules
+
+## Code Style
+
+- **Python**: Follow PEP 8, use type hints
+- **TypeScript**: ESLint + Prettier defaults
+- **Commits**: Use conventional commits (`feat:`, `fix:`, `docs:`, `refactor:`)
+
+## Pull Request Process
+
+1. Create a feature branch from `develop`
+2. Make your changes with clear commit messages
+3. Ensure tests pass
+4. Submit a PR with a description of changes
+5. Wait for code review

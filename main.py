@@ -137,7 +137,7 @@ def main():
         logger.info("=====================================================")
         sys.exit(1)
 
-def run_pipeline(url: str, preferred_engine: str = "auto", num_clips: int | None = None) -> dict:
+def run_pipeline(url: str, preferred_engine: str = "auto", num_clips: int | None = None, platforms: dict | None = None) -> dict:
     """Exécute le pipeline complet de clipping (utilisable via CLI ou Celery)."""
     groq_api_key = os.getenv("GROQ_API_KEY")
     
@@ -188,8 +188,33 @@ def run_pipeline(url: str, preferred_engine: str = "auto", num_clips: int | None
     effects_plan = effects_director.generate_effects_plan(viral_json, effects_json, preferred_engine=preferred_engine)
 
     n_clips = len(analysis.get("clips", []))
-    n_platforms = 3 if effects_plan else 1
-    logger.info(f"\n[ÉTAPE 5/6] ✂️ Montage ({n_clips} clips × {n_platforms} plateformes)")
+    
+    # --- DISTRIBUTION DES PLATEFORMES ---
+    if platforms and effects_plan:
+        distribution = []
+        for p, count in platforms.items():
+            if count and count > 0:
+                if p == "shorts": p = "youtube" # Mapper noms frontend vers backend si nécessaire
+                if p == "instagram": p = "reels" # Mapper noms frontend vers backend
+                distribution.extend([p] * count)
+        
+        # Filtre le plan d'effets pour assigner une seule plateforme par clip
+        for i, clip in enumerate(effects_plan.get("clips", [])):
+            if i < len(distribution):
+                target_p = distribution[i]
+                orig_platforms = clip.get("platforms", {})
+                clip["platforms"] = {target_p: orig_platforms.get(target_p, {})}
+                logger.info(f"   🎯 Clip {i+1} assigné exclusivement à: {target_p}")
+            else:
+                 # S'il y a plus de clips que demandé, on vide les plateformes ou on garde le premier
+                 if len(distribution) > 0:
+                     target_p = distribution[-1]
+                     clip["platforms"] = {target_p: clip.get("platforms", {}).get(target_p, {})}
+                 else:
+                     clip["platforms"] = {} # Exclure du rendu multiformat
+
+    n_platforms = 3 if effects_plan and not platforms else (len(platforms) if platforms else 1)
+    logger.info(f"\n[ÉTAPE 5/6] ✂️ Montage ({n_clips} clips)")
     clipper.process_clips(video_file, viral_json, transcription_json, clips_dir, effects_plan)
 
     logger.info(f"\n[ÉTAPE 6/6] 🔍 Génération des descriptions SEO (moteur: {preferred_engine})")

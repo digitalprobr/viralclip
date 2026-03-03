@@ -22,6 +22,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copie du reste des fichiers
 COPY . .
+RUN useradd -m appuser && chown -R appuser:appuser /app
+USER appuser
 
 # Maintenir le conteneur actif pour le développement interactif
 CMD ["tail", "-f", "/dev/null"]
